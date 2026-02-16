@@ -146,22 +146,19 @@ window.addEventListener("DOMContentLoaded", () => {
 					type: "fill",
 					source: "heatVulnerability",
 					paint: {
-						"fill-color": [
-							"interpolate",
-							["linear"],
-							["to-number", ["get", "rank"]],
-							1, "#dbeafe",
-							10, "#1d4ed8"
+						'fill-color': [
+							'interpolate',
+							['linear'],
+							['get', 'hvi'],
+							1, '#00ff00',   // Green (low)
+							2, '#ffff00',   // Yellow
+							3, '#ffa500',   // Orange
+							4, '#ff0000'    // Red (high)
 						],
-						"fill-opacity": 0.5
+						'fill-opacity': 0.6
 					}
 				});
-				map.addLayer({
-					id: "heatVulnerability-outline",
-					type: "line",
-					source: "heatVulnerability",
-					paint: { "line-color": "#0284c7", "line-width": 1 }
-				});
+				// Outline layer removed
 			});
 		}
 		// 同步 pan/zoom
