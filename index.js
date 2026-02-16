@@ -6,7 +6,7 @@
 
 console.log("index.js loaded ✅");
 
-mapboxgl.accessToken = "pk.eyJ1Ijoic3VubmlodSIsImEiOiJjbWxwZm54bHUwNWJiM2ZvcXh3NHlrdGllIn0.zdpq6eZxirk5VV9tQ7uqBg";
+mapboxgl.accessToken = "pk.eyJ1Ijoic3VubmlodSIsImEiOiJjbWxwZmh6NDAxY200M2dvb2VlMzZ2aTM4In0.Xq6Z1l7EMA4II91mAAhyTw";
 
 window.addEventListener("DOMContentLoaded", () => {
   const container = document.getElementById("mapbox-base");

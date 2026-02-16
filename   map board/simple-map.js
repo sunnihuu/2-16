@@ -10,7 +10,7 @@ window.addEventListener("load", () => {
    ========================= */
 
 // 1) Token（建议你放到 config.js，不要公开）
-mapboxgl.accessToken = "pk.eyJ1Ijoic3VubmlodSIsImEiOiJjbWxvcDgybjkwcXl5M2tva29ibG5tc2VmIn0.Irx4occMNtG5dMKorBjDJAE";
+mapboxgl.accessToken = "pk.eyJ1Ijoic3VubmlodSIsImEiOiJjbWxwZmh6NDAxY200M2dvb2VlMzZ2aTM4In0.Xq6Z1l7EMA4II91mAAhyTw";
 
 // 2) Map keys must match HTML: id="map-<key>" + data-mapkey="<key>"
 const MAP_KEYS = [
