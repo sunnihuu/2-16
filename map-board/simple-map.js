@@ -30,7 +30,7 @@ const DATA_SOURCES = {
   emergencyFood:  "./data/cfc_food_sites.geojson",
   freshZoning:    "./data/nyc-fresh-zoining.geojson",
   truckRoutes:    "./data/nyc-truck-routes-2026.geojson",
-  floodRisk:      "./data/stormewater-flood-wgs84.geojson",
+  floodRisk:      "./data/stormwater-flood.geojson",
   heatVulnerability: "./data/Heat_Vulnerability_Index_Rankings_20260216.geojson",
 };
 
@@ -52,9 +52,8 @@ function addLayersForKey(map, key) {
   if (key === "supplyGap") {
     safeAddSource(map, "supplyGap", { type: "geojson", data: DATA_SOURCES.supplyGap });
 
-    // NOTE: field name might not be gap_rank in your file.
-    // If your choropleth shows nothing, change "gap_rank" below to your actual property name.
-    const FIELD = "gap_rank";
+    // Use log_gap for color visualization
+    const FIELD = "log_gap";
 
     safeAddLayer(map, {
       id: "supplyGap-fill",
@@ -65,10 +64,13 @@ function addLayersForKey(map, key) {
           "interpolate",
           ["linear"],
           ["to-number", ["coalesce", ["get", FIELD], 0]],
-          1, "#dbeafe",
-          10, "#1d4ed8"
+          4, "#fee2e2",
+          5, "#fca5a5",
+          6, "#ef4444",
+          7, "#b91c1c",
+          8, "#7f1d1d"
         ],
-        "fill-opacity": 0.65
+        "fill-opacity": 0.7
       }
     });
 
@@ -76,7 +78,7 @@ function addLayersForKey(map, key) {
       id: "supplyGap-outline",
       type: "line",
       source: "supplyGap",
-      paint: { "line-color": "#1d4ed8", "line-width": 1 }
+      paint: { "line-color": "#7f1d1d", "line-width": 1 }
     });
   }
 
@@ -89,10 +91,19 @@ function addLayersForKey(map, key) {
       source: "emergencyFood",
       paint: {
         "circle-radius": 5,
-        "circle-color": "#dc2626",
-        "circle-opacity": 0.75,
+        "circle-color": [
+          "match",
+          ["get", "type"],
+          "FP", "#dc2626", // Food Pantry - red
+          "MP", "#10b981", // Mobile Pantry - green
+          "SP", "#3b82f6", // Soup Kitchen - blue
+          "SK", "#3b82f6", // Soup Kitchen - blue
+          "CP", "#fbbf24", // Community Fridge - yellow
+          "#a21caf" // default (purple)
+        ],
+        "circle-opacity": 0.85,
         "circle-stroke-color": "#fff",
-        "circle-stroke-width": 1
+        "circle-stroke-width": 1.5
       }
     });
   }
@@ -100,12 +111,40 @@ function addLayersForKey(map, key) {
   if (key === "freshZoning") {
     safeAddSource(map, "freshZoning", { type: "geojson", data: DATA_SOURCES.freshZoning });
 
-    safeAddLayer(map, {
-      id: "freshZoning",
-      type: "line",
-      source: "freshZoning",
-      paint: { "line-color": "#f97316", "line-width": 2 }
-    });
+      // Fill layer for FRESH Zoning
+      safeAddLayer(map, {
+        id: "freshZoning-fill",
+        type: "fill",
+        source: "freshZoning",
+        paint: {
+          "fill-color": [
+            "match",
+            ["get", "name"],
+            "Discretionary tax incentives", "#3b82f6", // blue
+            "Zoning incentives", "#fbbf24", // yellow
+            "Zoning and discretionary tax incentives", "#60a5fa", // light blue
+            "#a21caf" // default color
+          ],
+          "fill-opacity": 0.45,
+        },
+      });
+      // Outline layer for FRESH Zoning
+      safeAddLayer(map, {
+        id: "freshZoning-outline",
+        type: "line",
+        source: "freshZoning",
+        paint: {
+          "line-color": [
+            "match",
+            ["get", "name"],
+            "Discretionary tax incentives", "#3b82f6", // blue
+            "Zoning incentives", "#fbbf24", // yellow
+            "Zoning and discretionary tax incentives", "#60a5fa", // light blue
+            "#a21caf" // default color
+          ],
+          "line-width": 2
+        }
+      });
   }
 
   if (key === "truckRoutes") {
@@ -115,7 +154,18 @@ function addLayersForKey(map, key) {
       id: "truckRoutes",
       type: "line",
       source: "truckRoutes",
-      paint: { "line-color": "#111827", "line-width": 2 }
+      paint: {
+        "line-color": [
+          "match",
+          ["get", "routetype"],
+          "Local", "#3b82f6", // blue
+          "Through", "#10b981", // green
+          "Connector", "#fbbf24", // yellow
+          "Express", "#ec4899", // pink
+          "#6366f1" // default color
+        ],
+        "line-width": 2
+      }
     });
   }
 
@@ -126,14 +176,23 @@ function addLayersForKey(map, key) {
       id: "floodRisk-fill",
       type: "fill",
       source: "floodRisk",
-      paint: { "fill-color": "#38bdf8", "fill-opacity": 0.35 }
+      paint: {
+        "fill-color": [
+          "match",
+          ["get", "Flooding_Category"],
+          "Low", "#60a5fa", // blue
+          "High", "#1e3a8a", // dark blue
+          "#c084fc" // default color
+        ],
+        "fill-opacity": 0.35
+      }
     });
 
     safeAddLayer(map, {
       id: "floodRisk-outline",
       type: "line",
       source: "floodRisk",
-      paint: { "line-color": "#0284c7", "line-width": 1 }
+      paint: { "line-color": "#1e3a8a", "line-width": 1 }
     });
   }
 
@@ -147,18 +206,58 @@ function addLayersForKey(map, key) {
         "fill-color": [
           "interpolate",
           ["linear"],
-          ["get", "rank"],
-          1, "#dbeafe",
-          3, "#60a5fa",
-          5, "#38bdf8",
-          7, "#fbbf24",
-          9, "#ef4444",
-          10, "#dc2626"
+          ["get", "hvi"],
+          1, "#fee2e2",
+          3, "#fca5a5",
+          5, "#ef4444",
+          7, "#b91c1c",
+          10, "#7f1d1d"
         ],
         "fill-opacity": 0.7
       }
     });
+
+    safeAddLayer(map, {
+      id: "heatVulnerability-outline",
+      type: "line",
+      source: "heatVulnerability",
+      paint: { "line-color": "#7f1d1d", "line-width": 1 }
+    });
   }
+}
+
+// -------- hover popup --------
+function addHoverPopup(map, layerId, fields, labels) {
+  const popup = new mapboxgl.Popup({ closeButton: false, closeOnClick: false });
+
+  map.on('mousemove', layerId, (e) => {
+    if (e.features && e.features.length > 0) {
+      const feature = e.features[0];
+      let html = '<div style="min-width:200px">';
+      fields.forEach((f, i) => {
+        let val = feature.properties[f] ?? '';
+        // Emergency Food Site Type user-friendly mapping
+        if (layerId === 'emergencyFood' && labels[i] === 'Site Type') {
+          if (val === 'FP') {
+            val = 'Food Pantry (free groceries)';
+          } else if (val === 'MP') {
+            val = 'Mobile Pantry (mobile food distribution)';
+          } else if (val === 'SP') {
+            val = 'Soup Kitchen (free meals)';
+          } else if (val === 'CP') {
+            val = 'Community Fridge (take/share food)';
+          }
+        }
+        html += `<div><strong>${labels[i]}:</strong> ${val}</div>`;
+      });
+      html += '</div>';
+      popup.setLngLat(e.lngLat).setHTML(html).addTo(map);
+    }
+  });
+
+  map.on('mouseleave', layerId, () => {
+    popup.remove();
+  });
 }
 
 // -------- init maps (after window load) --------
@@ -187,25 +286,48 @@ window.addEventListener("load", () => {
     maps.set(key, map);
 
     map.on("error", (e) => logMapError(key, e));
-    // 额外诊断：直接打印关键错误
     map.on("error", (e) => {
       console.error(`[${key}]`, e?.error || e);
     });
 
     map.on("load", () => {
-      // critical in grid layouts
       map.resize();
-
       addLayersForKey(map, key);
 
-      // Optional: show basic message if farmersMarkets has no data yet
-      if (key === "farmersMarkets") {
-        // nothing — no error
+      // Add hover popup for each map with user-friendly labels
+      if (key === "supplyGap") {
+        addHoverPopup(map, "supplyGap-fill",
+          ["nta_name", "log_gap", "food_insecure_percentage"],
+          ["Neighborhood", "Supply Gap (log scale)", "Food Insecure %"]);
+      }
+      if (key === "heatVulnerability") {
+        addHoverPopup(map, "heatVulnerability",
+          ["hvi"],
+          ["Heat Vulnerability Index"]);
+      }
+      if (key === "emergencyFood") {
+        addHoverPopup(map, "emergencyFood",
+          ["org_name", "type", "tin", "borough", "zip"],
+          ["Site Name", "Site Type", "Tax ID (TIN)", "Borough", "ZIP Code"]);
+      }
+      if (key === "freshZoning") {
+        addHoverPopup(map, "freshZoning",
+          ["name", "type"],
+          ["Zone Name", "Zone Type"]);
+      }
+      if (key === "truckRoutes") {
+        addHoverPopup(map, "truckRoutes",
+          ["routetype"],
+          ["Route Type"]);
+      }
+      if (key === "floodRisk") {
+        addHoverPopup(map, "floodRisk-fill",
+          ["Flooding_Category"],
+          ["Flood Risk Category"]);
       }
     });
   });
 
-  // after maps exist, hook sync + selection
   setupSync();
   setupSelection();
   setActive("supplyGap");
