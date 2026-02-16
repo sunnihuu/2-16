@@ -30,7 +30,7 @@ const DATA_SOURCES = {
   emergencyFood:  "./data/cfc_food_sites.geojson",
   freshZoning:    "./data/nyc-fresh-zoining.geojson",
   truckRoutes:    "./data/nyc-truck-routes-2026.geojson",
-  floodRisk:      "./data/stormewater-flood.geojson",
+  floodRisk:      "./data/stormewater-flood-wgs84.geojson",
   heatVulnerability: "./data/Heat_Vulnerability_Index_Rankings_20260216.geojson",
 };
 
