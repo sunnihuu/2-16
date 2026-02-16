@@ -1,3 +1,9 @@
+console.log("maps.js loaded ✅", !!window.mapboxgl);
+
+window.addEventListener("load", () => {
+  console.log("window loaded ✅", "mapboxgl:", !!window.mapboxgl);
+});
+
 /* =========================
    NYC Food System Observatory
    6 synced maps + active legend
@@ -178,6 +184,10 @@ window.addEventListener("load", () => {
     maps.set(key, map);
 
     map.on("error", (e) => logMapError(key, e));
+    // 额外诊断：直接打印关键错误
+    map.on("error", (e) => {
+      console.error(`[${key}]`, e?.error || e);
+    });
 
     map.on("load", () => {
       // critical in grid layouts

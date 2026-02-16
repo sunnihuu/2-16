@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NYC Food System Observatory Maps</title>
+  <link href="./map-board/maps.css" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8fafc;
+    }
+    .maps-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, 400px);
+      gap: 16px;
+      padding: 32px;
+      max-width: 1400px;
+      margin: auto;
+    }
+    .map-container {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      background: #fff;
+    }
+    .map-title {
+      position: absolute;
+      top: 8px;
+      left: 12px;
+      background: rgba(255,255,255,0.85);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: bold;
+      z-index: 2;
+    }
+    .map {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+  <script src="./index.js" defer></script>
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet" />
+  <script src="./map-board/simple-map.js" defer></script>
+</head>
+<body>
+  <div class="maps-grid">
+    <div class="map-container"><div class="map-title">Supply Gap</div><div id="map-supplyGap" class="map" data-mapkey="supplyGap"></div></div>
+    <div class="map-container"><div class="map-title">Vulnerability Index Ranking</div><div id="map-farmersMarkets" class="map" data-mapkey="farmersMarkets"></div></div>
+    <div class="map-container"><div class="map-title">Emergency Food</div><div id="map-emergencyFood" class="map" data-mapkey="emergencyFood"></div></div>
+    <div class="map-container"><div class="map-title">FRESH Zoning</div><div id="map-freshZoning" class="map" data-mapkey="freshZoning"></div></div>
+    <div class="map-container"><div class="map-title">Truck Routes</div><div id="map-truckRoutes" class="map" data-mapkey="truckRoutes"></div></div>
+    <div class="map-container"><div class="map-title">Flood Risk</div><div id="map-floodRisk" class="map" data-mapkey="floodRisk"></div></div>
+  </div>
+</body>
+</html>
