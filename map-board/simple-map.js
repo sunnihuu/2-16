@@ -110,30 +110,28 @@ window.addEventListener("DOMContentLoaded", () => {
 		}
 		if (key === "supplyGap") {
 			map.on("load", () => {
-				map.addSource("supplyGap", {
+				map.addSource("supply-gap", {
 					type: "geojson",
 					data: DATA_SOURCES.supplyGap,
 				});
 				map.addLayer({
-					id: "supplyGap-fill",
-					type: "fill",
-					source: "supplyGap",
+					id: 'supply-gap-fill',
+					type: 'fill',
+					source: 'supply-gap',
 					paint: {
-						"fill-color": [
-							"interpolate",
-							["linear"],
-							["to-number", ["get", "gap_rank"]],
-							1, "#dbeafe",
-							10, "#1d4ed8"
+						'fill-color': [
+							'interpolate',
+							['linear'],
+							['get', 'log_gap'],
+							4.1, '#ffcccc',
+							5.0, '#ff9999',
+							5.5, '#ff6666',
+							6.0, '#ff3333',
+							6.3, '#cc0000',
+							6.6, '#990000'
 						],
-						"fill-opacity": 0.65
+						'fill-opacity': 0.6
 					}
-				});
-				map.addLayer({
-					id: "supplyGap-outline",
-					type: "line",
-					source: "supplyGap",
-					paint: { "line-color": "#1d4ed8", "line-width": 1 }
 				});
 			});
 		}
